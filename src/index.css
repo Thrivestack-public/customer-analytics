@@ -35,6 +35,16 @@
   transform: scale(0.98);
 }
 
+@keyframes dash {
+  to {
+    stroke-dashoffset: 16;
+  }
+}
+
+.animate-dash {
+  animation: dash 1s linear infinite;
+}
+
 /* Page Transitions */
 .page-enter {
   opacity: 0;

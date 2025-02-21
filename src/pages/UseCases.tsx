@@ -21,12 +21,15 @@ import {
 
 import { Team } from '../types';
 import { UseCase } from '../components/UseCase';
+import { InviteTeamModal } from '../components/InviteTeamModal';
 
 export function UseCases() {
   const navigate = useNavigate();
   const [selectedCase, setSelectedCase] = React.useState<string | null>(null);
   const [expandedCase, setExpandedCase] = React.useState<string | null>(null);
   const [selectedTeams, setSelectedTeams] = React.useState<Team[]>([]);
+  const [showInviteModal, setShowInviteModal] = React.useState(false);
+  const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(null);
 
   const teams: Team[] = [
     'Marketing teams',
@@ -57,7 +60,11 @@ export function UseCases() {
       teams: ['Marketing teams'],
       setupStatus: 'not_started' as const,
       setupTime: 10,
-      steps: 5
+      steps: 5,
+      teamMembers: [
+        { name: 'Sarah Chen', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120' },
+        { name: 'Alex Kim', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120' }
+      ]
     },
     {
       id: 'product',
@@ -78,7 +85,12 @@ export function UseCases() {
       teams: ['Product teams', 'Engineering teams'],
       setupStatus: 'in_progress' as const,
       setupTime: 10,
-      steps: 3
+      steps: 3,
+      teamMembers: [
+        { name: 'David Park', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120' },
+        { name: 'Emily Johnson', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=120' },
+        { name: 'Michael Brown', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120' }
+      ]
     },
     {
       id: 'revenue',
@@ -127,15 +139,12 @@ export function UseCases() {
   const handleContinue = () => {
     // Only allow continue for non-coming-soon items
     if (selectedCase) {
-      const selectedUseCase = useCases.find(uc => uc.id === selectedCase);
-      if (selectedUseCase && selectedUseCase.setupStatus !== 'coming_soon') {
-        if (selectedCase === 'marketing') {
-          navigate('/setup-acquisition');
-        } else if (selectedCase === 'product') {
-          navigate('/setup-product');
-        } else {
-          navigate('/connect');
-        }
+      if (selectedCase === 'marketing') {
+        navigate('/setup-acquisition');
+      } else if (selectedCase === 'product') {
+        navigate('/product-analytics');
+      } else {
+        navigate('/connect');
       }
     }
   };
@@ -147,6 +156,17 @@ export function UseCases() {
   const handleExpand = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedCase(expandedCase === id ? null : id);
+  };
+
+  const handleInviteTeam = (team: Team) => {
+    setSelectedTeam(team);
+    setShowInviteModal(true);
+  };
+
+  const handleSendInvites = async (emails: string[]) => {
+    // In a real app, this would call your API to send invites
+    console.log('Sending invites to:', emails);
+    await new Promise(resolve => setTimeout(resolve, 1000));
   };
 
   const handleTeamToggle = (team: Team) => {
@@ -254,10 +274,21 @@ export function UseCases() {
                 isExpanded={expandedCase === useCase.id}
                 onSelect={handleSelect}
                 onExpand={handleExpand}
+                onInviteTeam={handleInviteTeam}
               />
             ))}
           </div>
         </div>
+
+        {/* Invite Modal */}
+        {selectedTeam && (
+          <InviteTeamModal
+            isOpen={showInviteModal}
+            onClose={() => setShowInviteModal(false)}
+            team={selectedTeam}
+            onInvite={handleSendInvites}
+          />
+        )}
 
         {selectedCase && (
           <div className="fixed bottom-6 right-6 z-50">

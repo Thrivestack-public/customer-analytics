@@ -22,7 +22,7 @@ export function OnboardingLayout() {
       </div>
 
       {/* Main Content */}
-      <div className="pt-16">
+      <div className="pt-24">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <Outlet />
         </div>

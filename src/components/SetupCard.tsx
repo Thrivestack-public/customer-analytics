@@ -1,39 +1,58 @@
 import React from 'react';
-import { Users2, ChevronDown, UserPlus } from 'lucide-react';
-import { Team, SetupStatus } from '../types';
+import { Clock, Users2, ChevronDown, UserPlus } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
+import { SetupStatus, Team } from '../types';
 
 interface TeamMember {
   name: string;
   avatar: string;
 }
 
-interface UseCaseProps {
-  useCase: {
-    id: string;
-    title: string;
-    icon: React.ReactNode;
-    shortDesc: string;
-    metrics: string[];
-    challenge: string;
-    solution: string;
-    benefitIcon: React.ReactNode;
-    benefit: string;
-    features: string[];
-    teams: Team[];
-    setupStatus: SetupStatus;
-    setupTime: number;
-    steps: number;
-    teamMembers?: TeamMember[];
-  };
+interface SetupCardProps {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  shortDesc: string;
+  challenge: string;
+  solution: string;
+  benefitIcon: React.ReactNode;
+  benefit: string;
+  features: string[];
+  teams: Team[];
+  setupStatus: SetupStatus;
+  setupTime: number;
+  steps: number;
+  completedSteps?: number;
   isSelected: boolean;
   isExpanded: boolean;
   onSelect: (id: string) => void;
   onExpand: (id: string, e: React.MouseEvent) => void;
   onInviteTeam?: (team: Team) => void;
+  teamMembers?: TeamMember[];
 }
 
-export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, onInviteTeam }: UseCaseProps) {
+export function SetupCard({
+  id,
+  title,
+  icon,
+  shortDesc,
+  challenge,
+  solution,
+  benefitIcon,
+  benefit,
+  features,
+  teams,
+  setupStatus,
+  setupTime,
+  steps,
+  teamMembers,
+  completedSteps,
+  isSelected,
+  isExpanded,
+  onSelect,
+  onExpand,
+  onInviteTeam
+}: SetupCardProps) {
   return (
     <div
       className={`
@@ -44,7 +63,7 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
     >
       <div 
         className="p-4"
-        onClick={() => onSelect(useCase.id)}
+        onClick={() => onSelect(id)}
       >
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-4">
@@ -53,17 +72,17 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
               ${isSelected ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600'}
               group-hover:${!isSelected ? 'bg-indigo-100' : ''}
             `}>
-              {useCase.icon}
+              {icon}
             </div>
             <div>
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold text-gray-900">
-                  {useCase.title}
+                  {title}
                 </h3>
               </div>
-              <p className="text-gray-600 mb-2">{useCase.shortDesc}</p>
+              <p className="text-gray-600 mb-2">{shortDesc}</p>
               <div className="flex flex-wrap gap-2">
-                {useCase.teams.map((team) => (
+                {teams.map((team) => (
                   <div key={team} className="relative group">
                     <div className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
                       <Users2 className="w-3 h-3 mr-1" />
@@ -82,9 +101,9 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
                     </div>
                     
                     {/* Team Members */}
-                    {useCase.teamMembers && useCase.teamMembers.length > 0 && (
+                    {teamMembers && teamMembers.length > 0 && (
                       <div className="absolute -bottom-2 left-2 flex -space-x-2">
-                        {useCase.teamMembers.slice(0, 3).map((member, idx) => (
+                        {teamMembers.slice(0, 3).map((member, idx) => (
                           <img
                             key={idx}
                             src={member.avatar}
@@ -93,9 +112,9 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
                             title={member.name}
                           />
                         ))}
-                        {useCase.teamMembers.length > 3 && (
+                        {teamMembers.length > 3 && (
                           <div className="w-5 h-5 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] text-gray-600 font-medium">
-                            +{useCase.teamMembers.length - 3}
+                            +{teamMembers.length - 3}
                           </div>
                         )}
                       </div>
@@ -106,9 +125,14 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <StatusBadge status={useCase.setupStatus} setupTime={useCase.setupTime} steps={useCase.steps} />
+            <StatusBadge 
+              status={setupStatus} 
+              setupTime={setupTime} 
+              steps={steps}
+              completedSteps={completedSteps}
+            />
             <button
-              onClick={(e) => onExpand(useCase.id, e)}
+              onClick={(e) => onExpand(id, e)}
               className={`
                 p-1 rounded-full hover:bg-gray-100 transition-transform duration-200
                 ${isExpanded ? 'rotate-180' : ''}
@@ -128,18 +152,18 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Challenge</h4>
-                  <p className="text-gray-600 text-sm">{useCase.challenge}</p>
+                  <p className="text-gray-600 text-sm">{challenge}</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Solution</h4>
-                  <p className="text-gray-600 text-sm">{useCase.solution}</p>
+                  <p className="text-gray-600 text-sm">{solution}</p>
                 </div>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Key Features</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  {useCase.features.map((feature, index) => (
+                  {features.map((feature, index) => (
                     <div key={index} className="flex items-center text-sm text-gray-600">
                       <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 mr-2" />
                       {feature}
@@ -149,8 +173,8 @@ export function UseCase({ useCase, isSelected, isExpanded, onSelect, onExpand, o
               </div>
 
               <div className="flex items-center text-sm text-indigo-600 font-medium">
-                {useCase.benefitIcon}
-                <span className="ml-2">{useCase.benefit}</span>
+                {benefitIcon}
+                <span className="ml-2">{benefit}</span>
               </div>
             </div>
           </div>

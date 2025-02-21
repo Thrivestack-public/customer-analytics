@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Code2, 
+  Target,
   CheckCircle2, 
   ArrowRight, 
   ArrowLeft,
@@ -23,6 +24,20 @@ import {
   Link
 } from 'lucide-react';
 import { PricingModal } from '../components/PricingModal';
+import { InviteTeamModal } from '../components/InviteTeamModal';
+import { Team } from '../types';
+import { SetupHeader } from '../components/SetupHeader';
+
+const teamMembers = {
+  'Marketing teams': [
+    { name: 'Sarah Chen', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120' },
+    { name: 'Alex Kim', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120' }
+  ],
+  'RevOps teams': [
+    { name: 'Emily Johnson', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=120' },
+    { name: 'Michael Brown', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120' }
+  ]
+};
 
 const TRACKING_SCRIPT = `<script>
   (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({
@@ -112,6 +127,10 @@ function SetupAcquisition() {
     ));
   };
 
+  const handleInviteTeam = () => {
+    // Placeholder for team invitation logic
+  };
+
   const renderCodeBlock = (code: string, title: string) => (
     <div className="relative">
       <div className="absolute right-4 top-4 flex items-center space-x-2">
@@ -145,16 +164,17 @@ function SetupAcquisition() {
           </button>
         </div>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Setup Visitor Analytics
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Track and analyze visitor behavior on your website, and connect it with 
-            user signups and conversions.
-          </p>
-        </div>
+        <SetupHeader
+          icon={<Target className="w-8 h-8 text-indigo-600" />}
+          title="Setup Visitor Analytics"
+          description="Track and analyze visitor behavior on your website, and connect it with user signups and conversions."
+          teams={['Marketing teams', 'RevOps teams']}
+          teamMembers={teamMembers}
+          setupTime={20}
+          totalSteps={steps.length}
+          completedSteps={currentStep + 1}
+          onInviteTeam={handleInviteTeam}
+        />
 
         <div className="flex gap-8">
           {/* Left Sidebar - Progress */}
